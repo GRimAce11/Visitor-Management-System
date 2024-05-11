@@ -13,7 +13,7 @@ const Home = () => {
                     >
                         welcome to
 
-                        <span className="sm:block py-2"> SynCe Vistor Management System </span>
+                        <span className="sm:block py-2"> SnyCe Vistor Management System </span>
                     </h1>
 
                     <div className="mt-8 flex flex-wrap justify-center gap-5">
