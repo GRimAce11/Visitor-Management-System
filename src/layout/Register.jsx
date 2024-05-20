@@ -1,6 +1,6 @@
 import { Label } from '@/components/ui/label'
 import { Button } from '@nextui-org/react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Welcometext from './component/Welcometext'
 import './style/register.css'
 import { useForm } from 'react-hook-form'

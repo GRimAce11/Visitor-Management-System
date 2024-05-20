@@ -4,7 +4,7 @@ const AdminHeader = () => {
     return (
         <>
             {/* Header */}
-            <div div className="fixed w-full flex items-center justify-between h-14 text-white z-10" >
+            <div className="fixed w-full flex items-center justify-between h-14 text-white z-10" >
                 <div className="flex items-center justify-start md:justify-center w-14 md:w-64 h-14 bg-blue-800  border-none">
                     <span className="hidden md:block">Welcome {" "} Admin</span>
                 </div>

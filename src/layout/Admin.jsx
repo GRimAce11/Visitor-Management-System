@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FaDoorOpen, FaPlus } from "react-icons/fa";
+import { FaDoorOpen, FaFilePdf, FaPlus } from "react-icons/fa";
 import { IoToday } from "react-icons/io5";
 import './style/admintabs.css'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -17,8 +17,11 @@ import { MdDashboard, MdBrandingWatermark } from "react-icons/md";
 import { BsFilePersonFill } from "react-icons/bs";
 import { IoIosLogOut } from "react-icons/io";
 import RegisterCompanyForm from './component/RegisterCompanyForm';
+import './style/exporttopdf.css'
+import { PDFExport } from '@progress/kendo-react-pdf';
 
 const Admin = () => {
+
     const navigate = useNavigate();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const {
@@ -65,7 +68,6 @@ const Admin = () => {
         setshowvisitors(false);
         setshowcompanies(true);
     }
-
 
     const [visitorid, setvisitorid] = useState(1);
 
@@ -181,6 +183,22 @@ const Admin = () => {
         setusername(user);
     }, [])
 
+    // Exporting visitor data
+    const pdfExportToday = React.useRef(null);
+    const pdfExportAllVisitors = React.useRef(null);
+    const pdfExportAllCompanies = React.useRef(null);
+
+    const exportPDFToday = () => {
+        pdfExportToday.current.save(`Visitor_Data_${todayFormatted}.pdf`);
+    };
+    const exportPDFAllVisitors = () => {
+        pdfExportAllVisitors.current.save(`Visitor_Data_All.pdf`);
+    };
+    const exportPDFAllCompanies = () => {
+        pdfExportAllCompanies.current.save(`Company_Data_All.pdf`);
+    };
+
+
     const carddata = [
         {
             id: 1,
@@ -204,8 +222,8 @@ const Admin = () => {
 
     ]
     const options = {
-        legend: { position: "bottom" },
-        pageSize: 10,
+        // legend: { position: "bottom" },
+        // pageSize: 10,
         showRowNumber: true,
     };
 
@@ -213,7 +231,7 @@ const Admin = () => {
         <div className="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-white dark:bg-gray-700 text-black ">
 
             {/* Header */}
-            <div div className="fixed w-full flex items-center justify-between h-14 text-white z-10" >
+            <div className="fixed w-full flex items-center justify-between h-14 text-white z-10" >
                 <div className="flex items-center justify-start md:justify-center w-14 md:w-64 h-14 bg-blue-800 dark:bg-gray-800 border-none">
                     <span className="hidden md:block">Welcome {" "} <b>{username}</b></span>
                 </div>
@@ -262,8 +280,8 @@ const Admin = () => {
                         </li>
 
                     </ul>
-                    
-                    
+
+
                 </div>
             </div>
             {/* ./Sidebar */}
@@ -298,17 +316,28 @@ const Admin = () => {
                                     </div>
                                     <div className='w-full space-y-5'>
                                         <p className='text-lg font-semibold'>Visitor List for {todayFormatted}</p>
-                                        <Chart
-                                            chartType="Table"
-                                            width="100%"
-                                            className='w-full'
-                                            data={[["Name", "Company Name", "Date", "Time", "Phone No"], ...FetchedVisitorDataToday]}
-                                            options={options}
-                                            formatters={formatters}
-                                        />
+                                        <div className='flex justify-between w-full'>
+                                            <PDFExport ref={pdfExportToday} paperSize="A4" repeatHeaders="true" margin="2cm" fileName={`Visitor_Data_${todayFormatted}`}>
+                                                <Chart
+                                                    chartType="Table"
+                                                    width="100%"
+                                                    className='w-full'
+                                                    data={[["Name", "Company Name", "Date", "Time", "Phone No"], ...FetchedVisitorDataToday]}
+                                                    options={options}
+                                                    formatters={formatters}
+                                                />
+                                            </PDFExport>
+                                            <button onClick={exportPDFToday} className="export-btn mr-10">
+                                                <span className="export-btn-text-one">Export</span>
+                                                <FaFilePdf className='absolute left-5 top-4 ' />
+                                                <FaFilePdf className='absolute right-5 top-4 ' />
+                                                <span className="export-btn-text-two">As PDF</span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
                     </main>
@@ -322,14 +351,24 @@ const Admin = () => {
                                 <div className="flex items-center h-10 intro-y">
                                     <h2 className="mr-5 text-lg font-medium truncate">Visitors</h2>
                                 </div>
-                                <Chart
-                                    chartType="Table"
-                                    width="100%"
-                                    className='w-full'
-                                    data={[["Name", "Company Name", "Date", "Time", "Phone No"], ...FetchedVisitorData]}
-                                    options={options}
-                                    formatters={formatters}
-                                />
+                                <div className='flex justify-between items-end w-full'>
+                                    <PDFExport ref={pdfExportAllVisitors} paperSize="A4" repeatHeaders="true" margin="2cm" fileName='Visitor_Data_All'>
+                                        <Chart
+                                            chartType="Table"
+                                            width="100%"
+                                            className='w-full'
+                                            data={[["Name", "Company Name", "Date", "Time", "Phone No"], ...FetchedVisitorData]}
+                                            options={options}
+                                            formatters={formatters}
+                                        />
+                                    </PDFExport>
+                                    <button onClick={exportPDFAllVisitors} className="export-btn mr-10">
+                                        <span className="export-btn-text-one">Export</span>
+                                        <FaFilePdf className='absolute left-5 top-4 ' />
+                                        <FaFilePdf className='absolute right-5 top-4 ' />
+                                        <span className="export-btn-text-two">As PDF</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </main>
@@ -343,14 +382,24 @@ const Admin = () => {
                                 <div className="flex items-center h-10 intro-y">
                                     <h2 className="mr-5 text-lg font-medium truncate">Companies</h2>
                                 </div>
-                                <Chart
-                                    chartType="Table"
-                                    width="100%"
-                                    className='w-full'
-                                    data={[["Company Name", "Username", "Password"], ...FetchedCompanies]}
-                                    options={options}
-                                    formatters={formatters}
-                                />
+                                <div className='flex justify-between items-end w-full'>
+                                    <PDFExport ref={pdfExportAllCompanies} paperSize="A4" repeatHeaders="true" margin="2cm" fileName='Company_Data_All'>
+                                        <Chart
+                                            chartType="Table"
+                                            width="100%"
+                                            className='w-full'
+                                            data={[["Company Name", "Username", "Password"], ...FetchedCompanies]}
+                                            options={options}
+                                            formatters={formatters}
+                                        />
+                                    </PDFExport>
+                                    <button onClick={exportPDFAllCompanies} className="export-btn mr-10">
+                                        <span className="export-btn-text-one">Export</span>
+                                        <FaFilePdf className='absolute left-5 top-4 ' />
+                                        <FaFilePdf className='absolute right-5 top-4 ' />
+                                        <span className="export-btn-text-two">As PDF</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </main>
